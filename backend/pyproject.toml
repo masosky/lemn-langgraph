@@ -1,0 +1,31 @@
+[project]
+name = "agents-as-a-service-backend"
+version = "0.1.0"
+description = "LangGraph agents as a service showcase backend"
+authors = [{ name = "Auto Generated" }]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic",
+    "pydantic-settings",
+    "sqlalchemy",
+    "alembic",
+    "pytest",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx", "python-dotenv"]
+
+[tool.uv]
+dev-dependencies = ["pytest", "httpx", "python-dotenv"]
+
+[tool.uv.scripts]
+dev = "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+migrate = "alembic upgrade head"
+seed = "python -m app.routes.seed"
+test = "pytest -q"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

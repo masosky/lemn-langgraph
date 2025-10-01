@@ -1,0 +1,17 @@
+# Default configuration for the agents-as-a-service backend.
+# Copy this file to `settings.toml` to customise local values or override
+# environment variables when running without Docker.
+
+# Database and persistence
+DATABASE_URL = "postgresql+psycopg://demo:demo@localhost:5432/agents"
+QDRANT_URL = "http://localhost:6333"
+
+# Language model provider configuration
+LLM_PROVIDER = "fake"
+OPENAI_API_KEY = ""
+ANTHROPIC_API_KEY = ""
+TIMEZONE = "Europe/Madrid"
+
+[slack]
+signing_secret = ""
+bot_token = ""

@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+node_modules/
+web/dist/
+backend/app/settings.toml
