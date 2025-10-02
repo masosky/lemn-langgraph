@@ -70,14 +70,14 @@ class Settings(BaseSettings):
     ):
         """Inject TOML-based configuration before environment overrides."""
 
-        def toml_settings(_: type[BaseSettings]) -> dict[str, Any]:
+        def toml_settings(*_: Any) -> dict[str, Any]:
             return _load_settings_from_toml()
 
         return (
             init_settings,
-            toml_settings,
             env_settings,
             dotenv_settings,
+            toml_settings,
             file_secret_settings,
         )
 
