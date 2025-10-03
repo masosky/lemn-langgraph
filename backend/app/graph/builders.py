@@ -17,6 +17,9 @@ class AgentRunResult:
     reply: str
     tool_runs: list[dict[str, Any]] = field(default_factory=list)
     citations: list[dict[str, str]] = field(default_factory=list)
+    run_id: int | None = None
+    status: str = "completed"
+    interrupted_run_id: int | None = None
 
 
 class AgentGraph:

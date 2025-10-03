@@ -54,6 +54,26 @@ class Message(Base, TimestampMixin):
     user: Mapped[User | None] = relationship(back_populates="messages")
 
 
+class AgentRun(Base, TimestampMixin):
+    __tablename__ = "agent_runs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    agent: Mapped[str] = mapped_column(String, index=True)
+    channel_id: Mapped[int | None] = mapped_column(ForeignKey("channels.id"), nullable=True)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    status: Mapped[str] = mapped_column(String, default="pending", index=True)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    input_text: Mapped[str] = mapped_column(Text)
+    reply_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    tool_runs_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    citations_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    channel: Mapped[Channel | None] = relationship()
+    user: Mapped[User | None] = relationship()
+
+
 class Memory(Base, TimestampMixin):
     __tablename__ = "memories"
 
@@ -125,6 +145,7 @@ __all__ = [
     "User",
     "Channel",
     "Message",
+    "AgentRun",
     "Memory",
     "Document",
     "ABTest",

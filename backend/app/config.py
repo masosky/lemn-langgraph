@@ -60,6 +60,7 @@ class Settings(BaseSettings):
     anthropic_api_key: Optional[str] = Field(default=None, alias="ANTHROPIC_API_KEY")
     timezone: str = Field(default="Europe/Madrid", alias="TIMEZONE")
     slack: SlackSettings = Field(default_factory=SlackSettings)
+    allow_interrupts: bool = Field(default=True, alias="ALLOW_INTERRUPTS")
 
     @classmethod
     def settings_customise_sources(
