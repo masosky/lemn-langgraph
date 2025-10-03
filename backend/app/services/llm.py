@@ -29,8 +29,11 @@ class FakeLLM:
 
 
 class OpenAILLM:
-    def __init__(self, *, api_key: str, model: str) -> None:
-        self._client = OpenAI(api_key=api_key)
+    def __init__(self, *, api_key: str, model: str, organization: str | None) -> None:
+        client_kwargs = {"api_key": api_key}
+        if organization:
+            client_kwargs["organization"] = organization
+        self._client = OpenAI(**client_kwargs)
         self._model = model
 
     def generate(self, prompt: str) -> LLMResult:
@@ -47,7 +50,11 @@ def get_llm(agent: str) -> LLM:
     if settings.llm_provider == "openai":
         if not settings.openai_api_key:
             raise RuntimeError("OPENAI_API_KEY must be set when using the OpenAI provider")
-        return OpenAILLM(api_key=settings.openai_api_key, model=settings.openai_model)
+        return OpenAILLM(
+            api_key=settings.openai_api_key,
+            model=settings.openai_model,
+            organization=settings.openai_organization,
+        )
     return FakeLLM(agent)
 
 

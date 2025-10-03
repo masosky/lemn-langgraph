@@ -56,6 +56,7 @@ class Settings(BaseSettings):
     )
     openai_api_key: Optional[str] = Field(default=None, alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4o-mini", alias="OPENAI_MODEL")
+    openai_organization: Optional[str] = Field(default=None, alias="OPENAI_ORGANIZATION")
     anthropic_api_key: Optional[str] = Field(default=None, alias="ANTHROPIC_API_KEY")
     timezone: str = Field(default="Europe/Madrid", alias="TIMEZONE")
     slack: SlackSettings = Field(default_factory=SlackSettings)

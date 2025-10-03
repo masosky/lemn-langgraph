@@ -21,6 +21,7 @@ services:
       LLM_PROVIDER: ${LLM_PROVIDER}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL: ${OPENAI_MODEL}
+      OPENAI_ORGANIZATION: ${OPENAI_ORGANIZATION}
     ports:
       - "8000:8000"
     depends_on:
