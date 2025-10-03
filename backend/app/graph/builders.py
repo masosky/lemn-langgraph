@@ -1,6 +1,7 @@
 """Agent graph builders (simplified LangGraph-like orchestration)."""
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -35,6 +36,10 @@ class AgentGraph:
         )
         context = "\n".join(message.text for message in reversed(recent_messages))
         docs = tools.vector_search(db, text, k=3)
+        citations: list[dict[str, Any]] = []
+        for doc in docs:
+            score = doc["score"] if "score" in doc else 0.0
+            citations.append({"title": doc["title"], "score": score})
         prompt_parts = [
             f"Agent: {self.agent}",
             f"User: {user.display_name if user else 'unknown'}",
@@ -92,7 +97,39 @@ class AgentGraph:
                 kind="short_term",
                 content=f"Tools used: {[run['tool'] for run in tool_runs]}",
             )
-        citations = [{"title": doc["title"], "score": doc["score"]} for doc in docs]
+            memory_utils.store_memory(
+                db,
+                agent=self.agent,
+                channel=channel,
+                user=user,
+                kind="tool_run",
+                content=json.dumps(tool_runs, default=str),
+            )
+        if citations:
+            memory_utils.store_memory(
+                db,
+                agent=self.agent,
+                channel=channel,
+                user=user,
+                kind="citation",
+                content=json.dumps(citations, default=str),
+            )
+        memory_utils.store_memory(
+            db,
+            agent=self.agent,
+            channel=channel,
+            user=user,
+            kind="run_summary",
+            content=json.dumps(
+                {
+                    "user_text": text,
+                    "reply": llm_result.text,
+                    "tool_runs": tool_runs,
+                    "citations": citations,
+                },
+                default=str,
+            ),
+        )
         return AgentRunResult(reply=llm_result.text, tool_runs=tool_runs, citations=citations)
 
 

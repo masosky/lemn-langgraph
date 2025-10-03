@@ -6,7 +6,7 @@ import logging
 from fastapi import FastAPI
 
 from .config import get_settings
-from .routes import chat, health, memory, seed, slack, ui
+from .routes import chat, dashboard, health, memory, seed, slack, ui
 
 logging.basicConfig(level=logging.INFO)
 
@@ -21,6 +21,7 @@ def startup() -> None:
 
 app.include_router(health.router)
 app.include_router(chat.router)
+app.include_router(dashboard.router)
 app.include_router(slack.router)
 app.include_router(seed.router)
 app.include_router(memory.router)

@@ -55,6 +55,7 @@ class Settings(BaseSettings):
         default="fake", alias="LLM_PROVIDER"
     )
     openai_api_key: Optional[str] = Field(default=None, alias="OPENAI_API_KEY")
+    openai_model: str = Field(default="gpt-4o-mini", alias="OPENAI_MODEL")
     anthropic_api_key: Optional[str] = Field(default=None, alias="ANTHROPIC_API_KEY")
     timezone: str = Field(default="Europe/Madrid", alias="TIMEZONE")
     slack: SlackSettings = Field(default_factory=SlackSettings)

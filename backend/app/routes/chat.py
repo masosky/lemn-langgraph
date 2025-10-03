@@ -1,12 +1,16 @@
 """Chat API endpoint."""
 from __future__ import annotations
 
+import logging
+
 from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from ..agents import registry
 from ..deps import get_db
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api")
 
@@ -31,16 +35,44 @@ class ChatResponse(BaseModel):
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest, db: Session = Depends(get_db)) -> ChatResponse:
+    logger.info(
+        "Chat request received",
+        extra={
+            "agent": request.agent,
+            "channel_id": request.channel_id,
+            "user_id": request.user_id,
+        },
+    )
     try:
         agent_ctx = registry.get_agent(request.agent)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
-    result = agent_ctx.run(
-        db,
-        text=request.text,
-        channel_ref=request.channel_id,
-        user_ref=request.user_id,
+    try:
+        result = agent_ctx.run(
+            db,
+            text=request.text,
+            channel_ref=request.channel_id,
+            user_ref=request.user_id,
+        )
+    except Exception:
+        logger.exception(
+            "Chat run failed",
+            extra={
+                "agent": request.agent,
+                "channel_id": request.channel_id,
+                "user_id": request.user_id,
+            },
+        )
+        raise
+
+    logger.info(
+        "Chat run completed",
+        extra={
+            "agent": request.agent,
+            "channel_id": request.channel_id,
+            "user_id": request.user_id,
+        },
     )
 
     return ChatResponse(
